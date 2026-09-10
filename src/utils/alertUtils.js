@@ -62,7 +62,7 @@ export function generateAlertsFromTransition(prevState, nextState) {
       timestamp: now,
       icon: 'ShieldCheck',
     });
-  } else if (nextSmoke >= 80 && nextSmoke < SMOKE_THRESHOLDS.DANGER_MIN && (prevSmoke < 80 || prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN)) {
+  } else if (nextSmoke > SMOKE_THRESHOLDS.MODERATE_MAX && nextSmoke < SMOKE_THRESHOLDS.DANGER_MIN && (prevSmoke <= SMOKE_THRESHOLDS.MODERATE_MAX || prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN)) {
     newAlerts.push({
       id: `smoke-high-${Date.now()}-${Math.random()}`,
       type: 'SMOKE_HIGH',

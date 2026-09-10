@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck, ShieldAlert } from 'lucide-react';
+import { SMOKE_THRESHOLDS } from '../config/sensorConfig';
 import FlameSensor from './FlameSensor';
 import SmokeGauge from './SmokeGauge';
 import MetalDetection from './MetalDetection';
@@ -7,7 +8,7 @@ import MetalDetection from './MetalDetection';
 export default function SafetyPanel({ sensorData, isOnline }) {
   const rawFields = sensorData?.rawFields || {};
   const isFlameAlert = Boolean(sensorData?.flame);
-  const isGasAlert = Boolean(typeof sensorData?.smoke === 'number' && sensorData.smoke >= 100);
+  const isGasAlert = Boolean(typeof sensorData?.smoke === 'number' && sensorData.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 800));
   const hasSafetyHazard = isFlameAlert || isGasAlert;
 
   const getAlertBadgeText = () => {

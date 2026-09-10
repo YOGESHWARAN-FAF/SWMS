@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertOctagon, AlertTriangle, ShieldAlert, ShieldCheck, Flame, Wind } from 'lucide-react';
+import { SMOKE_THRESHOLDS } from '../config/sensorConfig';
 
 export default function SystemStatus({ systemStatus, sensorData }) {
   const isEmergency = systemStatus.state === 'EMERGENCY';
@@ -87,7 +88,7 @@ export default function SystemStatus({ systemStatus, sensorData }) {
                 <span>Fire: <strong>{sensorData?.flame ? 'ALERT (≥100)' : 'SAFE (<100)'}</strong></span>
               </div>
               <div className="neu-inset-sm flex items-center gap-1.5 px-3 py-1.5 text-slate-700">
-                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= 100 ? 'text-rose-500' : sensorData?.smoke >= 50 ? 'text-amber-600' : 'text-emerald-600'}`} />
+                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 800) ? 'text-rose-500' : sensorData?.smoke > (SMOKE_THRESHOLDS?.SAFE_MAX ?? 299) ? 'text-amber-600' : 'text-emerald-600'}`} />
                 <span>Gas: <strong>{Math.round(sensorData?.smoke ?? 0)} PPM</strong></span>
               </div>
             </div>
