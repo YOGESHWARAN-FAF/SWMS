@@ -6,8 +6,8 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
   const value = Math.max(0, typeof smokeValue === 'number' ? smokeValue : Number.parseFloat(smokeValue) || 0);
   const status = getSmokeStatus(value);
 
-  // Gauge calculation: Max gauge value 1000, 180-degree semi-circle
-  const maxScale = 1000;
+  // Gauge calculation: Max gauge value 100% (percentage 0-100%), 180-degree semi-circle
+  const maxScale = 100;
   const clampedVal = Math.min(maxScale, value);
   const radius = 75;
   const strokeWidth = 12;
@@ -35,7 +35,7 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
           GAS / SMOKE SENSOR
         </h3>
         <p className="text-xs text-slate-500 mt-0.5">
-          Air particulate & smoke PPM concentration (Alarm: ≥800)
+          Air particulate & smoke concentration (Alarm: ≥80%)
         </p>
 
         {/* Semi-Circular Radial SVG Gauge */}
@@ -44,8 +44,8 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
             <defs>
               <linearGradient id="gaugeGradientNeu" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#10b981" />
-                <stop offset="30%" stopColor="#22c55e" />
-                <stop offset="60%" stopColor="#f59e0b" />
+                <stop offset="45%" stopColor="#22c55e" />
+                <stop offset="65%" stopColor="#f59e0b" />
                 <stop offset="80%" stopColor="#e11d48" />
                 <stop offset="100%" stopColor="#be123c" />
               </linearGradient>
@@ -82,7 +82,7 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
               <span className="text-2xl sm:text-3xl font-black text-slate-800 font-mono tracking-tight">
                 {Math.round(value)}
               </span>
-              <span className="text-xs font-mono text-slate-500">PPM</span>
+              <span className="text-xs font-mono text-slate-500">%</span>
             </div>
             <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border mt-1 ${status.badgeClass}`}>
               {status.level}
@@ -91,10 +91,10 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
 
           {/* Scale Labels */}
           <div className="w-full flex justify-between px-2 text-[9px] font-mono text-slate-500 mt-1">
-            <span>0 PPM (Safe)</span>
-            <span>300</span>
-            <span>600</span>
-            <span className="text-rose-600 font-bold">≥800 (Alarm)</span>
+            <span>0% (Safe)</span>
+            <span>50%</span>
+            <span>70%</span>
+            <span className="text-rose-600 font-bold">≥80% (Alarm)</span>
           </div>
         </div>
       </div>

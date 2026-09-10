@@ -108,7 +108,7 @@ export function getSmokeStatus(smokeValue) {
   if (val >= SMOKE_THRESHOLDS.DANGER_MIN) {
     return {
       level: 'DANGER',
-      description: `Hazardous gas or smoke detected (≥${SMOKE_THRESHOLDS.DANGER_MIN} PPM threshold exceeded)!`,
+      description: `Hazardous gas or smoke detected (≥${SMOKE_THRESHOLDS.DANGER_MIN}% threshold exceeded)!`,
       severity: 'danger',
       color: '#e11d48',
       badgeClass: 'bg-rose-50 text-rose-700 border-rose-200 shadow-sm',
@@ -137,7 +137,7 @@ export function getSmokeStatus(smokeValue) {
   }
   return {
     level: 'SAFE',
-    description: `Air quality within clean atmospheric baseline (<${SMOKE_THRESHOLDS.SAFE_MAX + 1} PPM)`,
+    description: `Air quality within clean atmospheric baseline (<${SMOKE_THRESHOLDS.SAFE_MAX + 1}%)`,
     severity: 'safe',
     color: '#16a34a',
     badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm',
@@ -147,9 +147,9 @@ export function getSmokeStatus(smokeValue) {
 
 /**
  * Calculates Global System Status:
- * NORMAL: No flame hazard AND Smoke < 300 AND All bins < 80%
- * WARNING: Any bin >= 80% OR Smoke is MODERATE or HIGH (300-799)
- * EMERGENCY: Flame detected (optical ADC >= 100) OR Smoke/Gas >= 800 PPM
+ * NORMAL: No flame hazard (0) AND Smoke < 50% AND All bins < 80%
+ * WARNING: Any bin >= 80% OR Smoke is MODERATE or HIGH (50-79%)
+ * EMERGENCY: Flame detected (Digital 1) OR Smoke/Gas >= 80%
  */
 export function getSystemStatus(sensorData) {
   if (!sensorData) {
@@ -163,14 +163,14 @@ export function getSystemStatus(sensorData) {
 
   const { flame, smoke, bin1, bin2, bin3 } = sensorData;
 
-  // EMERGENCY condition: Flame detected (>= 100) or Gas >= 800 PPM
+  // EMERGENCY condition: Flame detected (Digital 1) or Gas >= 80%
   const isSmokeDanger = typeof smoke === 'number' && smoke >= SMOKE_THRESHOLDS.DANGER_MIN;
   const isFlameDanger = flame === true;
 
   if (isFlameDanger && isSmokeDanger) {
     return {
       state: 'EMERGENCY',
-      message: `Fire & Gas Hazards Detected — Flame Sensor (≥100) & Gas (≥${SMOKE_THRESHOLDS.DANGER_MIN} PPM) Triggered`,
+      message: `Fire & Gas Hazards Detected — Flame Sensor (1) & Gas (≥${SMOKE_THRESHOLDS.DANGER_MIN}%) Triggered`,
       severity: 'emergency',
       color: '#e11d48',
       pulse: true,
@@ -180,7 +180,7 @@ export function getSystemStatus(sensorData) {
   if (isFlameDanger) {
     return {
       state: 'EMERGENCY',
-      message: 'Fire / Flame Hazard Detected — Optical Flame Sensor Triggered (≥100)',
+      message: 'Fire / Flame Hazard Detected — Optical Flame Sensor Triggered (State: 1)',
       severity: 'emergency',
       color: '#e11d48',
       pulse: true,
@@ -190,7 +190,7 @@ export function getSystemStatus(sensorData) {
   if (isSmokeDanger) {
     return {
       state: 'EMERGENCY',
-      message: `Critical Gas / Smoke Level (${Math.round(smoke)} PPM ≥ ${SMOKE_THRESHOLDS.DANGER_MIN}) — Immediate Inspection Required`,
+      message: `Critical Gas / Smoke Level (${Math.round(smoke)}% ≥ ${SMOKE_THRESHOLDS.DANGER_MIN}%) — Immediate Inspection Required`,
       severity: 'emergency',
       color: '#e11d48',
       pulse: true,

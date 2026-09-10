@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { normalizeBinFill } from '../utils/sensorUtils';
-import { THINGSPEAK_CONFIG, FLAME_THRESHOLDS } from '../config/sensorConfig';
+import { THINGSPEAK_CONFIG } from '../config/sensorConfig';
 
 const CHANNEL_ID = import.meta.env.VITE_THINGSPEAK_CHANNEL_ID || THINGSPEAK_CONFIG.defaultChannelId;
 const READ_API_KEY = import.meta.env.VITE_THINGSPEAK_READ_API_KEY || THINGSPEAK_CONFIG.defaultReadApiKey;
@@ -27,13 +27,13 @@ function safeBinary(val) {
 }
 
 /**
- * Safely parse flame sensor (Kit sends analog value; threshold is >= 100 for fire hazard)
+ * Safely parse flame sensor (Hardware sends digital 0 or 1: 1 = Alarm/Fire, 0 = Normal/Safe)
  */
 function safeFlame(val) {
   if (val === null || val === undefined || val === '') return false;
   const num = Number.parseFloat(val);
   if (isNaN(num)) return false;
-  return num >= (FLAME_THRESHOLDS?.TRIGGER_MIN ?? 100);
+  return num === 1 || num >= 1;
 }
 
 /**

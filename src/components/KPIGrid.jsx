@@ -76,18 +76,18 @@ export default function KPIGrid({ sensorData, connectionStatus, systemStatus }) 
       <StatusCard
         title="Flame Sensor"
         value={sensorData?.flame ? 'FIRE ALERT' : 'SAFE'}
-        subvalue={sensorData?.flameValue !== undefined ? `Raw: ${sensorData.flameValue}` : ''}
-        badgeText={sensorData?.flame ? '≥100 ALARM' : '<100 NORMAL'}
+        subvalue={sensorData?.flameValue !== undefined ? `State: ${sensorData.flameValue}` : ''}
+        badgeText={sensorData?.flame ? 'ALERT (1)' : 'SAFE (0)'}
         badgeType={sensorData?.flame ? 'rose' : 'emerald'}
         icon={Flame}
-        trend="Threshold: ≥100"
+        trend="Digital 0/1"
       />
 
       {/* 6. Smoke Status */}
       <StatusCard
         title="Gas / Smoke"
         value={`${Math.round(sensorData?.smoke ?? 0)}`}
-        subvalue="PPM"
+        subvalue="%"
         badgeText={smokeInfo.level}
         badgeType={
           smokeInfo.severity === 'danger'
@@ -97,7 +97,7 @@ export default function KPIGrid({ sensorData, connectionStatus, systemStatus }) 
             : 'emerald'
         }
         icon={Wind}
-        trend="MQ-2 Gas"
+        trend="MQ-2 Gas (%)"
       />
 
       {/* 7. Metal Detection Status */}

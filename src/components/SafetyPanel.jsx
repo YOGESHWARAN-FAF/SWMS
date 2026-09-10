@@ -8,7 +8,7 @@ import MetalDetection from './MetalDetection';
 export default function SafetyPanel({ sensorData, isOnline }) {
   const rawFields = sensorData?.rawFields || {};
   const isFlameAlert = Boolean(sensorData?.flame);
-  const isGasAlert = Boolean(typeof sensorData?.smoke === 'number' && sensorData.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 800));
+  const isGasAlert = Boolean(typeof sensorData?.smoke === 'number' && sensorData.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 80));
   const hasSafetyHazard = isFlameAlert || isGasAlert;
 
   const getAlertBadgeText = () => {

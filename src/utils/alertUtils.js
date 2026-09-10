@@ -1,4 +1,4 @@
-import { FLAME_THRESHOLDS, SMOKE_THRESHOLDS, BIN_THRESHOLDS } from '../config/sensorConfig';
+import { SMOKE_THRESHOLDS, BIN_THRESHOLDS } from '../config/sensorConfig';
 
 /**
  * Evaluates state transitions and returns new alerts if state changed.
@@ -9,10 +9,9 @@ export function generateAlertsFromTransition(prevState, nextState) {
 
   if (!nextState) return newAlerts;
 
-  // 1. Flame Sensor Alarm Transition (Independent optical sensor threshold >= 100)
+  // 1. Flame Sensor Alarm Transition (Digital 1 = Alarm, 0 = Safe)
   const prevFlame = prevState?.flame === true;
   const nextFlame = nextState.flame === true;
-  const flameThreshold = FLAME_THRESHOLDS?.TRIGGER_MIN ?? 100;
 
   if (nextFlame && (!prevState || !prevFlame)) {
     newAlerts.push({
@@ -20,7 +19,7 @@ export function generateAlertsFromTransition(prevState, nextState) {
       type: 'FIRE',
       severity: 'EMERGENCY',
       title: 'Fire / Flame Hazard Detected',
-      message: `Critical fire safety alarm! Flame sensor triggered with reading ${nextState.flameValue ?? (nextState.rawFields?.field4 || '≥100')} (Threshold: ≥${flameThreshold}). Immediate fire suppression protocol required.`,
+      message: 'Critical fire safety alarm! Optical flame sensor detected fire/flame (State: 1 / ACTIVE). Immediate fire safety inspection required.',
       timestamp: now,
       icon: 'Flame',
     });
@@ -30,13 +29,13 @@ export function generateAlertsFromTransition(prevState, nextState) {
       type: 'FIRE_CLEARED',
       severity: 'INFO',
       title: 'Flame Hazard Cleared',
-      message: `Flame sensor reading returned to normal safe status (<${flameThreshold}).`,
+      message: 'Flame sensor returned to normal safe status (State: 0 / SAFE).',
       timestamp: now,
       icon: 'ShieldCheck',
     });
   }
 
-  // 2. Gas / Smoke Sensor Transitions (Independent MQ-2 threshold >= 100 PPM)
+  // 2. Gas / Smoke Sensor Transitions (MQ-2 Sensor in %: 0–100%)
   const prevSmoke = prevState?.smoke ?? 0;
   const nextSmoke = nextState.smoke ?? 0;
   const prevSmokeHazard = prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN;
@@ -48,7 +47,7 @@ export function generateAlertsFromTransition(prevState, nextState) {
       type: 'SMOKE_DANGER',
       severity: 'EMERGENCY',
       title: 'Hazardous Gas / Smoke Detected',
-      message: `Critical air quality alarm! Gas level reached ${nextSmoke} PPM (≥ ${SMOKE_THRESHOLDS.DANGER_MIN} PPM threshold). Immediate ventilation required.`,
+      message: `Critical air quality alarm! Gas level reached ${nextSmoke}% (≥ ${SMOKE_THRESHOLDS.DANGER_MIN}% threshold). Immediate ventilation required.`,
       timestamp: now,
       icon: 'AlertOctagon',
     });
@@ -58,7 +57,7 @@ export function generateAlertsFromTransition(prevState, nextState) {
       type: 'SMOKE_CLEARED',
       severity: 'INFO',
       title: 'Gas Hazard Cleared',
-      message: `Gas/smoke levels returned to safe operating baseline (${nextSmoke} PPM).`,
+      message: `Gas/smoke levels returned to safe operating baseline (${nextSmoke}%).`,
       timestamp: now,
       icon: 'ShieldCheck',
     });
@@ -68,7 +67,7 @@ export function generateAlertsFromTransition(prevState, nextState) {
       type: 'SMOKE_HIGH',
       severity: 'WARNING',
       title: 'Elevated Gas Concentration',
-      message: `Gas reading reached elevated level: ${nextSmoke} PPM (Warning threshold).`,
+      message: `Gas reading reached elevated level: ${nextSmoke}% (Warning threshold).`,
       timestamp: now,
       icon: 'AlertCircle',
     });
