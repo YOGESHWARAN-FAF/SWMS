@@ -51,6 +51,11 @@ export const BIN_CONFIG = {
   },
 };
 
+// Flame Sensor Thresholds (Analog reading from kit: >= 100 triggers flame alert, < 100 is normal/ambient)
+export const FLAME_THRESHOLDS = {
+  TRIGGER_MIN: 100,
+};
+
 // Gas & Smoke Sensor Thresholds (MQ-2 / Smoke Sensor)
 export const SMOKE_THRESHOLDS = {
   SAFE_MAX: 299,
@@ -82,7 +87,7 @@ export const SENSOR_FIELD_MAPPING = {
   field1: { name: 'Ultrasonic Sensor 1', target: 'Bin 1 Fill Level', unit: '%' },
   field2: { name: 'Ultrasonic Sensor 2', target: 'Bin 2 Fill Level', unit: '%' },
   field3: { name: 'Ultrasonic Sensor 3', target: 'Bin 3 Fill Level', unit: '%' },
-  field4: { name: 'Flame Sensor', target: 'Fire Detection', unit: 'Binary (0/1)' },
+  field4: { name: 'Flame Sensor', target: 'Fire Detection', unit: 'Analog (Threshold: ≥100)' },
   field5: { name: 'Gas / Smoke Sensor', target: 'Air Quality / Gas', unit: 'PPM' },
   field6: { name: 'Inductive Proximity Sensor', target: 'Metal Detection', unit: 'Binary (0/1)' },
 };

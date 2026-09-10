@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { normalizeBinFill } from '../utils/sensorUtils';
-import { THINGSPEAK_CONFIG } from '../config/sensorConfig';
+import { THINGSPEAK_CONFIG, FLAME_THRESHOLDS } from '../config/sensorConfig';
 
 const CHANNEL_ID = import.meta.env.VITE_THINGSPEAK_CHANNEL_ID || THINGSPEAK_CONFIG.defaultChannelId;
 const READ_API_KEY = import.meta.env.VITE_THINGSPEAK_READ_API_KEY || THINGSPEAK_CONFIG.defaultReadApiKey;
@@ -27,6 +27,16 @@ function safeBinary(val) {
 }
 
 /**
+ * Safely parse flame sensor (Kit sends analog value; threshold is >= 100 for fire hazard)
+ */
+function safeFlame(val) {
+  if (val === null || val === undefined || val === '') return false;
+  const num = Number.parseFloat(val);
+  if (isNaN(num)) return false;
+  return num >= (FLAME_THRESHOLDS?.TRIGGER_MIN ?? 100);
+}
+
+/**
  * Normalize single raw feed entry into structured sensor data object
  */
 export function normalizeFeedEntry(entry) {
@@ -36,6 +46,7 @@ export function normalizeFeedEntry(entry) {
       bin2: 0,
       bin3: 0,
       flame: false,
+      flameValue: 0,
       smoke: 0,
       metalDetected: false,
       timestamp: new Date().toISOString(),
@@ -59,7 +70,8 @@ export function normalizeFeedEntry(entry) {
     bin1: normalizeBinFill(raw1, 'bin1'),
     bin2: normalizeBinFill(raw2, 'bin2'),
     bin3: normalizeBinFill(raw3, 'bin3'),
-    flame: safeBinary(raw4),
+    flame: safeFlame(raw4),
+    flameValue: safeFloat(raw4, 0),
     smoke: safeFloat(raw5, 0),
     metalDetected: safeBinary(raw6),
     timestamp: entry.created_at || new Date().toISOString(),

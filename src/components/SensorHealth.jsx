@@ -1,7 +1,8 @@
 import React from 'react';
 import { CheckCircle2, XCircle, Cpu } from 'lucide-react';
+import { FLAME_THRESHOLDS } from '../config/sensorConfig';
 
-export default function SensorHealth({ sensorData, connectionStatus, channelMeta }) {
+export default function SensorHealth({ sensorData, connectionStatus, channelMeta: _channelMeta }) {
   const isChannelOnline = connectionStatus === 'LIVE';
   const raw = sensorData?.rawFields || {};
 
@@ -35,10 +36,12 @@ export default function SensorHealth({ sensorData, connectionStatus, channelMeta
     {
       id: 'field4',
       name: 'Flame Sensor',
-      pin: 'Field 4 Optical',
+      pin: 'Field 4 Optical ADC',
       target: 'Fire Detection',
       isValid: isChannelOnline && isFieldValid(raw.field4),
-      value: raw.field4 !== undefined && raw.field4 !== null ? (raw.field4 === '1' || raw.field4 === '2' ? 'ACTIVE' : 'IDLE') : 'NO DATA',
+      value: raw.field4 !== undefined && raw.field4 !== null
+        ? `${raw.field4} (${Number.parseFloat(raw.field4) >= (FLAME_THRESHOLDS?.TRIGGER_MIN ?? 100) ? 'ACTIVE' : 'IDLE'})`
+        : 'NO DATA',
     },
     {
       id: 'field5',

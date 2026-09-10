@@ -149,7 +149,7 @@ export function getSmokeStatus(smokeValue) {
  * Calculates Global System Status:
  * NORMAL: No flame AND Smoke < 300 AND All bins < 80%
  * WARNING: Any bin >= 80% OR Smoke is MODERATE or HIGH (300-799)
- * EMERGENCY: Flame = 1 OR Smoke >= 800
+ * EMERGENCY: Flame >= 100 OR Smoke >= 800
  */
 export function getSystemStatus(sensorData) {
   if (!sensorData) {
