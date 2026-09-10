@@ -88,7 +88,7 @@ export default function SystemStatus({ systemStatus, sensorData }) {
                 <span>Fire: <strong>{sensorData?.flame ? 'ALERT (1)' : 'SAFE (0)'}</strong></span>
               </div>
               <div className="neu-inset-sm flex items-center gap-1.5 px-3 py-1.5 text-slate-700">
-                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 80) ? 'text-rose-500' : sensorData?.smoke > (SMOKE_THRESHOLDS?.SAFE_MAX ?? 49) ? 'text-amber-600' : 'text-emerald-600'}`} />
+                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= (SMOKE_THRESHOLDS?.DANGER_MIN ?? 10) ? 'text-rose-500' : sensorData?.smoke > (SMOKE_THRESHOLDS?.SAFE_MAX ?? 6) ? 'text-amber-600' : 'text-emerald-600'}`} />
                 <span>Gas: <strong>{Math.round(sensorData?.smoke ?? 0)}%</strong></span>
               </div>
             </div>

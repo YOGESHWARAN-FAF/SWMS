@@ -147,9 +147,9 @@ export function getSmokeStatus(smokeValue) {
 
 /**
  * Calculates Global System Status:
- * NORMAL: No flame hazard (0) AND Smoke < 50% AND All bins < 80%
- * WARNING: Any bin >= 80% OR Smoke is MODERATE or HIGH (50-79%)
- * EMERGENCY: Flame detected (Digital 1) OR Smoke/Gas >= 80%
+ * NORMAL: No flame hazard (0) AND Smoke < 7% AND All bins < 80%
+ * WARNING: Any bin >= 80% OR Smoke is MODERATE or HIGH (7-9%)
+ * EMERGENCY: Flame detected (Digital 1) OR Smoke/Gas >= 10%
  */
 export function getSystemStatus(sensorData) {
   if (!sensorData) {
@@ -163,7 +163,7 @@ export function getSystemStatus(sensorData) {
 
   const { flame, smoke, bin1, bin2, bin3 } = sensorData;
 
-  // EMERGENCY condition: Flame detected (Digital 1) or Gas >= 80%
+  // EMERGENCY condition: Flame detected (Digital 1) or Gas >= 10%
   const isSmokeDanger = typeof smoke === 'number' && smoke >= SMOKE_THRESHOLDS.DANGER_MIN;
   const isFlameDanger = flame === true;
 

@@ -56,12 +56,12 @@ export const FLAME_THRESHOLDS = {
   TRIGGER_VALUE: 1,
 };
 
-// Gas & Smoke Sensor Thresholds (MQ-2 Sensor in %: 0–100%)
+// Gas & Smoke Sensor Thresholds (MQ-2 Sensor in %: Alarm at >= 10%)
 export const SMOKE_THRESHOLDS = {
-  SAFE_MAX: 49,     // 0-49%: Normal clean atmospheric baseline
-  MODERATE_MAX: 69, // 50-69%: Moderate gas detection
-  HIGH_MAX: 79,     // 70-79%: High / Elevated Warning
-  DANGER_MIN: 80,   // >= 80%: Critical Gas / Smoke Alarm Trigger
+  SAFE_MAX: 6,      // 0-6%: Normal clean baseline
+  MODERATE_MAX: 8,  // 7-8%: Moderate level
+  HIGH_MAX: 9,      // 9%: High warning
+  DANGER_MIN: 10,   // >= 10%: Critical Smoke / Gas Alarm Trigger
 };
 
 // Bin Fill Level Thresholds (%)
@@ -88,6 +88,6 @@ export const SENSOR_FIELD_MAPPING = {
   field2: { name: 'Ultrasonic Sensor 2', target: 'Bin 2 Fill Level', unit: '%' },
   field3: { name: 'Ultrasonic Sensor 3', target: 'Bin 3 Fill Level', unit: '%' },
   field4: { name: 'Flame Sensor', target: 'Fire Detection', unit: 'Digital (0=Safe, 1=Alarm)' },
-  field5: { name: 'Gas / Smoke Sensor', target: 'Air Quality / Gas', unit: '% (Alarm: ≥80%)' },
+  field5: { name: 'Gas / Smoke Sensor', target: 'Air Quality / Gas', unit: '% (Alarm: ≥10%)' },
   field6: { name: 'Inductive Proximity Sensor', target: 'Metal Detection', unit: 'Binary (0/1)' },
 };
