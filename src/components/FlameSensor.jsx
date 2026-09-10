@@ -39,7 +39,7 @@ export default function FlameSensor({ flameDetected, rawFieldValue, isOnline = t
                   ⚠ FIRE ALERT
                 </div>
                 <div className="text-xs font-bold text-rose-700 uppercase tracking-wider mt-0.5">
-                  FLAME DETECTED
+                  FLAME DETECTED (≥100 THRESHOLD)
                 </div>
               </div>
             </div>
@@ -53,7 +53,7 @@ export default function FlameSensor({ flameDetected, rawFieldValue, isOnline = t
                   SAFE
                 </div>
                 <div className="text-xs font-semibold text-slate-500 mt-0.5">
-                  No Flame Detected
+                  No Flame Detected (&lt;100)
                 </div>
               </div>
             </div>
@@ -64,11 +64,11 @@ export default function FlameSensor({ flameDetected, rawFieldValue, isOnline = t
       {/* Footer Info */}
       <div className="pt-2 border-t border-slate-300/40 flex items-center justify-between text-[11px] font-mono text-slate-500">
         <span>
-          Raw: <strong className="text-slate-700 font-bold">{rawFieldValue ?? (isFlame ? '100+' : '0')}</strong>
+          Raw: <strong className="text-slate-700 font-bold">{rawFieldValue ?? (isFlame ? '≥100' : '0')}</strong>
           <span className="text-[10px] text-slate-400 font-normal ml-1">(Threshold: ≥100)</span>
         </span>
         <span className={isFlame ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>
-          {isFlame ? 'EMERGENCY TRIGGER' : 'NORMAL'}
+          {isFlame ? 'FIRE DETECTED' : 'NORMAL (SAFE)'}
         </span>
       </div>
     </div>

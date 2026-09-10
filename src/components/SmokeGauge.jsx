@@ -7,7 +7,8 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
   const status = getSmokeStatus(value);
 
   // Gauge calculation: Max gauge value 1000, 180-degree semi-circle
-  const maxScale = 1000;
+  // Gauge calculation: Max gauge value 200, 180-degree semi-circle so 100 threshold is visible in upper danger arc
+  const maxScale = 200;
   const clampedVal = Math.min(maxScale, value);
   const radius = 75;
   const strokeWidth = 12;
@@ -35,7 +36,7 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
           GAS / SMOKE SENSOR
         </h3>
         <p className="text-xs text-slate-500 mt-0.5">
-          Air particulate & smoke PPM concentration
+          Air particulate & smoke PPM concentration (Alarm: ≥100)
         </p>
 
         {/* Semi-Circular Radial SVG Gauge */}
@@ -44,10 +45,10 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
             <defs>
               <linearGradient id="gaugeGradientNeu" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#10b981" />
-                <stop offset="35%" stopColor="#22c55e" />
-                <stop offset="60%" stopColor="#f59e0b" />
-                <stop offset="80%" stopColor="#f97316" />
-                <stop offset="100%" stopColor="#e11d48" />
+                <stop offset="25%" stopColor="#22c55e" />
+                <stop offset="40%" stopColor="#f59e0b" />
+                <stop offset="50%" stopColor="#e11d48" />
+                <stop offset="100%" stopColor="#be123c" />
               </linearGradient>
             </defs>
 
@@ -92,9 +93,9 @@ export default function SmokeGauge({ smokeValue = 0, rawFieldValue, isOnline = t
           {/* Scale Labels */}
           <div className="w-full flex justify-between px-2 text-[9px] font-mono text-slate-500 mt-1">
             <span>0 PPM (Safe)</span>
-            <span>300</span>
-            <span>600</span>
-            <span className="text-rose-600 font-bold">≥800 (Danger)</span>
+            <span>50</span>
+            <span>80</span>
+            <span className="text-rose-600 font-bold">≥100 (Alarm)</span>
           </div>
         </div>
       </div>

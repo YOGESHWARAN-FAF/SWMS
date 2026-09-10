@@ -66,13 +66,17 @@ export function normalizeFeedEntry(entry) {
   // Check if at least one field has data
   const hasData = [raw1, raw2, raw3, raw4, raw5, raw6].some(f => f !== null && f !== undefined && f !== '');
 
+  const smokeVal = safeFloat(raw5, 0);
+  const isFlameDetected = safeFlame(raw4);
+
   return {
     bin1: normalizeBinFill(raw1, 'bin1'),
     bin2: normalizeBinFill(raw2, 'bin2'),
     bin3: normalizeBinFill(raw3, 'bin3'),
-    flame: safeFlame(raw4),
+    flame: isFlameDetected,
+    rawFlameDetected: isFlameDetected,
     flameValue: safeFloat(raw4, 0),
-    smoke: safeFloat(raw5, 0),
+    smoke: smokeVal,
     metalDetected: safeBinary(raw6),
     timestamp: entry.created_at || new Date().toISOString(),
     entryId: entry.entry_id || null,

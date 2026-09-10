@@ -10,6 +10,7 @@ export default function AlertsPanel({ alerts = [], onClearAlerts }) {
       case 'FIRE':
         return <Flame className="w-3.5 h-3.5 text-rose-600" />;
       case 'FIRE_CLEARED':
+      case 'SMOKE_CLEARED':
         return <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />;
       case 'SMOKE_DANGER':
         return <AlertOctagon className="w-3.5 h-3.5 text-rose-600" />;

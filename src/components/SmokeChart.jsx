@@ -30,8 +30,8 @@ export default function SmokeChart({ historyData = [] }) {
             <span>Gas Reading:</span>
             <span className="font-bold text-emerald-700">{val} PPM</span>
           </div>
-          <p className={`text-[10px] font-bold ${val >= 800 ? 'text-rose-600' : val >= 600 ? 'text-orange-600' : val >= 300 ? 'text-amber-600' : 'text-emerald-600'}`}>
-            Status: {val >= 800 ? 'DANGER' : val >= 600 ? 'HIGH' : val >= 300 ? 'MODERATE' : 'SAFE'}
+          <p className={`text-[10px] font-bold ${val >= 100 ? 'text-rose-600' : val >= 80 ? 'text-orange-600' : val >= 50 ? 'text-amber-600' : 'text-emerald-600'}`}>
+            Status: {val >= 100 ? 'DANGER (ALARM)' : val >= 80 ? 'HIGH' : val >= 50 ? 'MODERATE' : 'SAFE'}
           </p>
         </div>
       );
@@ -52,20 +52,20 @@ export default function SmokeChart({ historyData = [] }) {
               Smoke & Gas History
             </h3>
             <p className="text-[11px] sm:text-xs text-slate-500">
-              MQ-2 air quality PPM readings over time
+              MQ-2 air quality PPM readings over time (Alarm: ≥100)
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono text-slate-500 flex-wrap">
           <span className="flex items-center gap-1 text-emerald-700 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> &lt;300 Safe
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> &lt;50 Safe
           </span>
           <span className="flex items-center gap-1 text-amber-700 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 300+ Mod
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 50+ Mod
           </span>
           <span className="flex items-center gap-1 text-rose-600 font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ≥800 Danger
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ≥100 Alarm
           </span>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function SmokeChart({ historyData = [] }) {
               <YAxis
                 stroke="#64748b"
                 fontSize={10}
-                domain={[0, 1000]}
+                domain={[0, (dataMax) => Math.max(150, Math.ceil(dataMax * 1.25))]}
                 tickFormatter={(val) => `${val}`}
                 tickLine={false}
                 fontFamily="JetBrains Mono, monospace"
@@ -107,8 +107,8 @@ export default function SmokeChart({ historyData = [] }) {
 
               <Tooltip content={<CustomTooltip />} />
 
-              <ReferenceLine y={300} stroke="#d97706" strokeDasharray="3 3" label={{ value: '300', fill: '#d97706', fontSize: 9, position: 'insideTopLeft' }} />
-              <ReferenceLine y={800} stroke="#e11d48" strokeDasharray="3 3" label={{ value: '800', fill: '#e11d48', fontSize: 9, position: 'insideTopRight' }} />
+              <ReferenceLine y={50} stroke="#d97706" strokeDasharray="3 3" label={{ value: '50 Warning', fill: '#d97706', fontSize: 9, position: 'insideTopLeft' }} />
+              <ReferenceLine y={100} stroke="#e11d48" strokeDasharray="3 3" label={{ value: '100 Alarm', fill: '#e11d48', fontSize: 9, position: 'insideTopRight' }} />
 
               <Area
                 type="monotone"

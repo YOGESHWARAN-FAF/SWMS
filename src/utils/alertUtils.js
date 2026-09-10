@@ -1,4 +1,4 @@
-import { SMOKE_THRESHOLDS, BIN_THRESHOLDS } from '../config/sensorConfig';
+import { FLAME_THRESHOLDS, SMOKE_THRESHOLDS, BIN_THRESHOLDS } from '../config/sensorConfig';
 
 /**
  * Evaluates state transitions and returns new alerts if state changed.
@@ -9,50 +9,66 @@ export function generateAlertsFromTransition(prevState, nextState) {
 
   if (!nextState) return newAlerts;
 
-  // 1. Flame Sensor transition
-  if (nextState.flame === true && (!prevState || prevState.flame !== true)) {
+  // 1. Flame Sensor Alarm Transition (Independent optical sensor threshold >= 100)
+  const prevFlame = prevState?.flame === true;
+  const nextFlame = nextState.flame === true;
+  const flameThreshold = FLAME_THRESHOLDS?.TRIGGER_MIN ?? 100;
+
+  if (nextFlame && (!prevState || !prevFlame)) {
     newAlerts.push({
       id: `flame-alert-${Date.now()}-${Math.random()}`,
       type: 'FIRE',
       severity: 'EMERGENCY',
-      title: 'Flame Detected',
-      message: 'Critical optical flame sensor triggered! Immediate safety inspection required.',
+      title: 'Fire / Flame Hazard Detected',
+      message: `Critical fire safety alarm! Flame sensor triggered with reading ${nextState.flameValue ?? (nextState.rawFields?.field4 || '≥100')} (Threshold: ≥${flameThreshold}). Immediate fire suppression protocol required.`,
       timestamp: now,
       icon: 'Flame',
     });
-  } else if (prevState && prevState.flame === true && nextState.flame === false) {
+  } else if (prevState && prevFlame && !nextFlame) {
     newAlerts.push({
       id: `flame-cleared-${Date.now()}-${Math.random()}`,
       type: 'FIRE_CLEARED',
       severity: 'INFO',
       title: 'Flame Hazard Cleared',
-      message: 'Flame sensor reading returned to safe status.',
+      message: `Flame sensor reading returned to normal safe status (<${flameThreshold}).`,
       timestamp: now,
       icon: 'ShieldCheck',
     });
   }
 
-  // 2. Smoke / Gas Sensor transitions
+  // 2. Gas / Smoke Sensor Transitions (Independent MQ-2 threshold >= 100 PPM)
   const prevSmoke = prevState?.smoke ?? 0;
   const nextSmoke = nextState.smoke ?? 0;
+  const prevSmokeHazard = prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN;
+  const nextSmokeHazard = nextSmoke >= SMOKE_THRESHOLDS.DANGER_MIN;
 
-  if (nextSmoke >= SMOKE_THRESHOLDS.DANGER_MIN && prevSmoke < SMOKE_THRESHOLDS.DANGER_MIN) {
+  if (nextSmokeHazard && (!prevState || !prevSmokeHazard)) {
     newAlerts.push({
       id: `smoke-danger-${Date.now()}-${Math.random()}`,
       type: 'SMOKE_DANGER',
       severity: 'EMERGENCY',
-      title: 'Gas / Smoke Hazard Level: DANGER',
-      message: `Gas sensor reading escalated to ${nextSmoke} PPM (>= ${SMOKE_THRESHOLDS.DANGER_MIN} PPM).`,
+      title: 'Hazardous Gas / Smoke Detected',
+      message: `Critical air quality alarm! Gas level reached ${nextSmoke} PPM (≥ ${SMOKE_THRESHOLDS.DANGER_MIN} PPM threshold). Immediate ventilation required.`,
       timestamp: now,
-      icon: 'AlertTriangle',
+      icon: 'AlertOctagon',
     });
-  } else if (nextSmoke >= 600 && nextSmoke < SMOKE_THRESHOLDS.DANGER_MIN && (prevSmoke < 600 || prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN)) {
+  } else if (prevState && prevSmokeHazard && !nextSmokeHazard) {
+    newAlerts.push({
+      id: `smoke-cleared-${Date.now()}-${Math.random()}`,
+      type: 'SMOKE_CLEARED',
+      severity: 'INFO',
+      title: 'Gas Hazard Cleared',
+      message: `Gas/smoke levels returned to safe operating baseline (${nextSmoke} PPM).`,
+      timestamp: now,
+      icon: 'ShieldCheck',
+    });
+  } else if (nextSmoke >= 80 && nextSmoke < SMOKE_THRESHOLDS.DANGER_MIN && (prevSmoke < 80 || prevSmoke >= SMOKE_THRESHOLDS.DANGER_MIN)) {
     newAlerts.push({
       id: `smoke-high-${Date.now()}-${Math.random()}`,
       type: 'SMOKE_HIGH',
       severity: 'WARNING',
       title: 'Elevated Gas Concentration',
-      message: `Gas reading reached HIGH level: ${nextSmoke} PPM.`,
+      message: `Gas reading reached elevated level: ${nextSmoke} PPM (Warning threshold).`,
       timestamp: now,
       icon: 'AlertCircle',
     });

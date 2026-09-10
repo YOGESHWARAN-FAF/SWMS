@@ -6,7 +6,16 @@ import MetalDetection from './MetalDetection';
 
 export default function SafetyPanel({ sensorData, isOnline }) {
   const rawFields = sensorData?.rawFields || {};
-  const hasSafetyHazard = sensorData?.flame || (sensorData?.smoke >= 800);
+  const isFlameAlert = Boolean(sensorData?.flame);
+  const isGasAlert = Boolean(typeof sensorData?.smoke === 'number' && sensorData.smoke >= 100);
+  const hasSafetyHazard = isFlameAlert || isGasAlert;
+
+  const getAlertBadgeText = () => {
+    if (isFlameAlert && isGasAlert) return 'FIRE & GAS ALERT ACTIVE';
+    if (isFlameAlert) return 'FLAME HAZARD ACTIVE';
+    if (isGasAlert) return 'GAS HAZARD ACTIVE';
+    return 'ALL SENSORS SAFE';
+  };
 
   return (
     <section className="space-y-3.5">
@@ -35,7 +44,7 @@ export default function SafetyPanel({ sensorData, isOnline }) {
               ? 'bg-rose-50 text-rose-700 border border-rose-300 animate-bounce'
               : 'neu-inset-sm text-emerald-800'
           }`}>
-            {hasSafetyHazard ? 'SAFETY ALERT ACTIVE' : 'ALL SENSORS SAFE'}
+            {getAlertBadgeText()}
           </span>
         </div>
       </div>

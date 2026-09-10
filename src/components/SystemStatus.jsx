@@ -26,7 +26,7 @@ export default function SystemStatus({ systemStatus, sensorData }) {
                 </div>
 
                 <p className="text-xs sm:text-sm font-semibold text-rose-100 mt-1">
-                  {sensorData?.flame ? 'Flame / Fire Hazard Detected by Optical Sensor' : 'Hazardous Toxic Smoke / Gas PPM Threshold Exceeded'}
+                  🚨 {systemStatus.message || 'Critical Emergency Hazard Detected — Immediate Inspection Required'}
                 </p>
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/95">
@@ -84,10 +84,10 @@ export default function SystemStatus({ systemStatus, sensorData }) {
             <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end text-xs font-mono">
               <div className="neu-inset-sm flex items-center gap-1.5 px-3 py-1.5 text-slate-700">
                 <Flame className={`w-3.5 h-3.5 ${sensorData?.flame ? 'text-rose-500' : 'text-emerald-600'}`} />
-                <span>Fire: <strong>{sensorData?.flame ? 'ALERT' : 'SAFE'}</strong></span>
+                <span>Fire: <strong>{sensorData?.flame ? 'ALERT (≥100)' : 'SAFE (<100)'}</strong></span>
               </div>
               <div className="neu-inset-sm flex items-center gap-1.5 px-3 py-1.5 text-slate-700">
-                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= 300 ? 'text-amber-600' : 'text-emerald-600'}`} />
+                <Wind className={`w-3.5 h-3.5 ${sensorData?.smoke >= 100 ? 'text-rose-500' : sensorData?.smoke >= 50 ? 'text-amber-600' : 'text-emerald-600'}`} />
                 <span>Gas: <strong>{Math.round(sensorData?.smoke ?? 0)} PPM</strong></span>
               </div>
             </div>

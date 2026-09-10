@@ -76,10 +76,11 @@ export default function KPIGrid({ sensorData, connectionStatus, systemStatus }) 
       <StatusCard
         title="Flame Sensor"
         value={sensorData?.flame ? 'FIRE ALERT' : 'SAFE'}
-        badgeText={sensorData?.flame ? 'TRIGGERED' : 'SAFE'}
+        subvalue={sensorData?.flameValue !== undefined ? `Raw: ${sensorData.flameValue}` : ''}
+        badgeText={sensorData?.flame ? '≥100 ALARM' : '<100 NORMAL'}
         badgeType={sensorData?.flame ? 'rose' : 'emerald'}
         icon={Flame}
-        trend="IR Sensor"
+        trend="Threshold: ≥100"
       />
 
       {/* 6. Smoke Status */}
